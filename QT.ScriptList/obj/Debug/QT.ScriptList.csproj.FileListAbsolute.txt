@@ -1,0 +1,17 @@
+D:\Quorum\QuorumTools\Patches\ScriptList\bin\Debug\ScriptList.exe.config
+D:\Quorum\QuorumTools\Patches\ScriptList\bin\Debug\ScriptList.exe
+D:\Quorum\QuorumTools\Patches\ScriptList\bin\Debug\ScriptList.pdb
+D:\Quorum\QuorumTools\Patches\ScriptList\bin\Debug\QT.Common.dll
+D:\Quorum\QuorumTools\Patches\ScriptList\bin\Debug\QT.Common.pdb
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\QT.ScriptList.csprojResolveAssemblyReference.cache
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\MainWindow.g.cs
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\App.g.cs
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\ScriptList_MarkupCompile.cache
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\ScriptList_MarkupCompile.lref
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\MainWindow.baml
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\ScriptList.g.resources
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\ScriptList.Properties.Resources.resources
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\QT.ScriptList.csproj.GenerateResource.Cache
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\QT.ScriptList.csproj.CoreCompileInputs.cache
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\ScriptList.exe
+D:\Quorum\QuorumTools\Patches\ScriptList\obj\Debug\ScriptList.pdb
