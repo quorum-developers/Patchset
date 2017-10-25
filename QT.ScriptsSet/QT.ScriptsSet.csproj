@@ -106,13 +106,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\MoveDown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MoveUp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Add.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Images\Delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ArrowUp.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ArrowDown.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

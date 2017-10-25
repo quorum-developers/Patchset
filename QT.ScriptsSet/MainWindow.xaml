@@ -54,7 +54,7 @@
                 <ColumnDefinition Width="112*" />
                 <ColumnDefinition Width="9*" />
                 <ColumnDefinition Width="366*" />
-                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <StackPanel
@@ -81,14 +81,40 @@
             </StackPanel>
 
             <StackPanel Grid.Row="1" Grid.Column="3">
-                <Button Command="{Binding MoveUp}" ToolTip="Переместить вверх">
-                    <Image Source="Images/ArrowUp.png" />
+                <Button
+                    Width="32"
+                    Height="32"
+                    Command="{Binding MoveUp}"
+                    Style="{StaticResource ToolButtonStyle}"
+                    ToolTip="Добавить скрипт">
+                    <Image
+                        Margin="5"
+                        Source="Images/Add.png"
+                        Style="{StaticResource ButtonImageStyle}" />
                 </Button>
-                <Button Command="{Binding MoveDown}" ToolTip="Переместить вниз">
-                    <Image Source="Images/ArrowDown.png" />
+                <Button
+                    Width="32"
+                    Height="32"
+                    Command="{Binding MoveUp}"
+                    Style="{StaticResource ToolButtonStyle}"
+                    ToolTip="Переместить вверх">
+                    <Image Source="Images/MoveUp.png" Style="{StaticResource ButtonImageStyle}" />
                 </Button>
-                <Button Command="{Binding Delete}" ToolTip="Удалить">
-                    <Image Source="Images/Delete.png" />
+                <Button
+                    Width="32"
+                    Height="32"
+                    Command="{Binding MoveDown}"
+                    Style="{StaticResource ToolButtonStyle}"
+                    ToolTip="Переместить вниз">
+                    <Image Source="Images/MoveDown.png" Style="{StaticResource ButtonImageStyle}" />
+                </Button>
+                <Button
+                    Width="32"
+                    Height="32"
+                    Command="{Binding Delete}"
+                    Style="{StaticResource ToolButtonStyle}"
+                    ToolTip="Удалить">
+                    <Image Source="Images/Delete.png" Style="{StaticResource ButtonImageStyle}" />
                 </Button>
             </StackPanel>
 
