@@ -17,10 +17,6 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Grid.Column="0">
             <MenuItem Header="Скрипты">
-
-                <MenuItem Command="{Binding AddScriptCommand}" Header="Добавить скрипт" />
-
-                <Separator />
                 <MenuItem Command="{Binding ExitCommand}" Header="Выход" />
             </MenuItem>
             <MenuItem Header="Инсталляция БД">
@@ -84,13 +80,10 @@
                 <Button
                     Width="32"
                     Height="32"
-                    Command="{Binding MoveUp}"
+                    Command="{Binding AddScriptCommand}"
                     Style="{StaticResource ToolButtonStyle}"
                     ToolTip="Добавить скрипт">
-                    <Image
-                        Margin="5"
-                        Source="Images/Add.png"
-                        Style="{StaticResource ButtonImageStyle}" />
+                    <Image Source="Images/Add.png" Style="{StaticResource ButtonImageStyle}" />
                 </Button>
                 <Button
                     Width="32"
