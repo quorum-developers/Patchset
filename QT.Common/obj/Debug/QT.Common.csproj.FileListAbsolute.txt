@@ -1,6 +1,0 @@
-D:\Quorum\QuorumTools\Patches\QT.Common\bin\Debug\QT.Common.dll
-D:\Quorum\QuorumTools\Patches\QT.Common\bin\Debug\QT.Common.pdb
-D:\Quorum\QuorumTools\Patches\QT.Common\obj\Debug\QT.Common.csprojResolveAssemblyReference.cache
-D:\Quorum\QuorumTools\Patches\QT.Common\obj\Debug\QT.Common.csproj.CoreCompileInputs.cache
-D:\Quorum\QuorumTools\Patches\QT.Common\obj\Debug\QT.Common.dll
-D:\Quorum\QuorumTools\Patches\QT.Common\obj\Debug\QT.Common.pdb
