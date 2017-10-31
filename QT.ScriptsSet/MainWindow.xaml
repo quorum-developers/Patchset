@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:QT.ScriptsSet"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Набор скриптов 25.10.2017"
+    Title="Набор скриптов 31.10.2017"
     Width="525"
     Height="350"
     WindowStartupLocation="CenterScreen"
@@ -19,19 +19,17 @@
             <MenuItem Header="Скрипты">
                 <MenuItem Command="{Binding ExitCommand}" Header="Выход" />
             </MenuItem>
-            <MenuItem Header="Инсталляция БД">
+            <MenuItem Header="Скрипты">
                 <MenuItem Command="{Binding OpenInstallationScriptCommand}" Header="Открыть run.sql" />
                 <MenuItem Command="{Binding OpenInstallationProjectCommand}" Header="Открыть проект..." />
                 <Separator />
                 <MenuItem Command="{Binding SaveInstallationProjectCommand}" Header="Сохранить проект как..." />
+            </MenuItem>
+            <MenuItem Header="Инсталляция БД">
                 <Separator />
                 <MenuItem Command="{Binding CreateSetForInstallationCommand}" Header="Создать набор скриптов" />
             </MenuItem>
             <MenuItem Header="Обновление БД">
-                <MenuItem
-                    Name="LoadFromFolder"
-                    Click="LoadFromFolder_OnClick"
-                    Header="Загрузить скрипты из папки" />
                 <MenuItem
                     Name="CreateSetForUpdatesCommand"
                     Click="CreatePatches_OnClick"
@@ -41,118 +39,121 @@
                 <MenuItem Header="О программе..." />
             </MenuItem>
         </Menu>
-        <Grid Grid.Row="1" Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="112*" />
-                <ColumnDefinition Width="9*" />
-                <ColumnDefinition Width="366*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
 
-            <StackPanel
-                Grid.Row="0"
-                Grid.Column="0"
-                Grid.ColumnSpan="4">
-                <TextBlock Text="Версия" />
-
-                <!--<TextBox Text="{Binding ApplicationVersion, UpdateSourceTrigger=PropertyChanged}" />-->
-
-                <TextBox>
-                    <TextBox.Text>
-                        <Binding Path="ApplicationVersion" UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <DataErrorValidationRule />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-
-                <TextBlock Text="Начало нумерации" />
-
-                <TextBox Text="{Binding StartIndex, UpdateSourceTrigger=PropertyChanged}" />
-            </StackPanel>
-
-            <StackPanel Grid.Row="1" Grid.Column="3">
-                <Button
-                    Width="32"
-                    Height="32"
-                    Command="{Binding AddScriptCommand}"
-                    Style="{StaticResource ToolButtonStyle}"
-                    ToolTip="Добавить скрипт">
-                    <Image Source="Images/Add.png" Style="{StaticResource ButtonImageStyle}" />
-                </Button>
-                <Button
-                    Width="32"
-                    Height="32"
-                    Command="{Binding MoveUp}"
-                    Style="{StaticResource ToolButtonStyle}"
-                    ToolTip="Переместить вверх">
-                    <Image Source="Images/MoveUp.png" Style="{StaticResource ButtonImageStyle}" />
-                </Button>
-                <Button
-                    Width="32"
-                    Height="32"
-                    Command="{Binding MoveDown}"
-                    Style="{StaticResource ToolButtonStyle}"
-                    ToolTip="Переместить вниз">
-                    <Image Source="Images/MoveDown.png" Style="{StaticResource ButtonImageStyle}" />
-                </Button>
-                <Button
-                    Width="32"
-                    Height="32"
-                    Command="{Binding Delete}"
-                    Style="{StaticResource ToolButtonStyle}"
-                    ToolTip="Удалить">
-                    <Image Source="Images/Delete.png" Style="{StaticResource ButtonImageStyle}" />
-                </Button>
-            </StackPanel>
-
-            <DataGrid
-                Name="ScriptDataGrid"
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                AutoGenerateColumns="False"
-                CanUserAddRows="False"
-                CanUserDeleteRows="False"
-                FontSize="18"
-                ItemsSource="{Binding Scripts}"
-                SelectedItem="{Binding SelectedScript}"
-                SelectionMode="Single">
-                <DataGrid.Columns>
-                    <DataGridTextColumn
-                        Binding="{Binding VirtualFileName}"
-                        Header="Новое имя файла"
-                        IsReadOnly="True" />
-                    <DataGridTextColumn
-                        Binding="{Binding SourceFileName}"
-                        Header="Исходное имя файла"
-                        IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding Description, Mode=TwoWay}" Header="Описание" />
-                    <!--<DataGridCheckBoxColumn Binding="{Binding AddNumber}" Header="Добавлять номер">
+        <TabControl Grid.Row="1" Grid.Column="0">
+            <TabItem Header="Скрипты">
+                <DockPanel LastChildFill="True">
+                    <StackPanel DockPanel.Dock="Right">
+                        <Button
+                            Width="32"
+                            Height="32"
+                            Command="{Binding AddScriptCommand}"
+                            Style="{StaticResource ToolButtonStyle}"
+                            ToolTip="Добавить скрипт">
+                            <Image Source="Images/Add.png" Style="{StaticResource ButtonImageStyle}" />
+                        </Button>
+                        <Button
+                            Width="32"
+                            Height="32"
+                            Command="{Binding MoveUp}"
+                            Style="{StaticResource ToolButtonStyle}"
+                            ToolTip="Переместить вверх">
+                            <Image Source="Images/MoveUp.png" Style="{StaticResource ButtonImageStyle}" />
+                        </Button>
+                        <Button
+                            Width="32"
+                            Height="32"
+                            Command="{Binding MoveDown}"
+                            Style="{StaticResource ToolButtonStyle}"
+                            ToolTip="Переместить вниз">
+                            <Image Source="Images/MoveDown.png" Style="{StaticResource ButtonImageStyle}" />
+                        </Button>
+                        <Button
+                            Width="32"
+                            Height="32"
+                            Command="{Binding Delete}"
+                            Style="{StaticResource ToolButtonStyle}"
+                            ToolTip="Удалить">
+                            <Image Source="Images/Delete.png" Style="{StaticResource ButtonImageStyle}" />
+                        </Button>
+                    </StackPanel>
+                    <DataGrid
+                        Name="ScriptDataGrid"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        CanUserDeleteRows="False"
+                        FontSize="18"
+                        ItemsSource="{Binding Scripts}"
+                        SelectedItem="{Binding SelectedScript}"
+                        SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Binding="{Binding VirtualFileName}"
+                                Header="Новое имя файла"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Binding="{Binding SourceFileName}"
+                                Header="Исходное имя файла"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn Binding="{Binding Description, Mode=TwoWay}" Header="Описание" />
+                            <!--<DataGridCheckBoxColumn Binding="{Binding AddNumber}" Header="Добавлять номер">
                         <DataGridCheckBoxColumn.HeaderStyle>
                             <Style TargetType="DataGridColumnHeader">
                                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                             </Style>
                         </DataGridCheckBoxColumn.HeaderStyle>
                     </DataGridCheckBoxColumn>-->
-                    <DataGridTextColumn
-                        Binding="{Binding PathName}"
-                        Header="Путь к файлу"
-                        IsReadOnly="True" />
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.CellEditingTemplate>
-                            <DataTemplate>
-                                <TextBox />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellEditingTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
+                            <DataGridTextColumn
+                                Binding="{Binding PathName}"
+                                Header="Путь к файлу"
+                                IsReadOnly="True" />
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Нумерация">
+                <StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Версия" />
+                        <TextBox>
+                            <TextBox.Text>
+                                <Binding Path="ApplicationVersion" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <DataErrorValidationRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+
+                        <TextBlock Text="Начало нумерации" />
+
+                        <TextBox Text="{Binding StartIndex, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Шаблоны">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.5*" />
+                        <RowDefinition Height="0.5*" />
+                    </Grid.RowDefinitions>
+                    <TextBox
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Text="{Binding InstallationTemplate}" />
+                    <TextBox
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Text="{Binding UpdateTemplate}" />
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

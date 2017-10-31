@@ -26,16 +26,6 @@ namespace QT.ScriptsSet
             {
                 _viewModel.CreatePatches(folderBrowserDialog.SelectedPath);
             }
-        }
-
-        private void LoadFromFolder_OnClick(object sender, RoutedEventArgs e)
-        {
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-
-            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                _viewModel.Load(folderBrowserDialog.SelectedPath);
-            }
-        }
+        }        
     }
 }

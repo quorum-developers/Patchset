@@ -12,10 +12,21 @@ namespace QT.ScriptsSet.ViewModels
 {
     public partial class MainViewModel
     {
+        public string _versionLog;
+
+        public string _descriptionLog;
+
+        public string _installationTemplate = @"prompt {description}" + Environment.NewLine + "@@{fileName}" + Environment.NewLine + "prompt";
+
+        public string _updateTemplate = @"prompt {description}" + Environment.NewLine + "@@{fileName}" +
+                                        Environment.NewLine +
+                                        "insert into own_patch_log(version, note) values('{version}', '{fileName}');" +
+                                        Environment.NewLine + "commit;";
+
         private ICommand _createSetForInstallationCommand;
         private ICommand _openInstallationProjectCommand;
         private ICommand _saveInstallationProjectCommand;
-
+        
         public ICommand CreateSetForInstallationCommand
         {
             get
@@ -33,10 +44,11 @@ namespace QT.ScriptsSet.ViewModels
 
                         foreach (var script in Scripts)
                         {
-                            File.Copy(Path.Combine(script.PathName, script.VirtualFileName), Path.Combine(folderBrowserDialog.SelectedPath, script.VirtualFileName));
-                            stringBuilder.AppendLine($"prompt {script.Description}");                            
-                            stringBuilder.AppendLine($"@@{script.VirtualFileName}");
-                            stringBuilder.AppendLine("prompt");
+                            File.Copy(Path.Combine(script.PathName, script.SourceFileName), Path.Combine(folderBrowserDialog.SelectedPath, script.VirtualFileName));
+
+                            stringBuilder.AppendLine(InstallationTemplate
+                                .Replace("{description}", script.Description)
+                                .Replace("{fileName}", script.VirtualFileName));
                         }
 
                         File.WriteAllText(Path.Combine(folderBrowserDialog.SelectedPath, "run.sql"), stringBuilder.ToString());
@@ -80,7 +92,11 @@ namespace QT.ScriptsSet.ViewModels
             {
                 return _saveInstallationProjectCommand ?? new SimpleCommand(() =>
                 {
-                    SaveFileDialog saveFileDialog = new SaveFileDialog { DefaultExt = "ssip" };
+                    SaveFileDialog saveFileDialog = new SaveFileDialog
+                    {
+                        Filter = "Проекты (*.ssip)|*.ssip|Все файлы (*.*)|*.*",
+                        DefaultExt = "ssip"
+                    };
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         XDocument xmlDocument = new XDocument(new XDeclaration("1.0", "utf-8", "no"));
@@ -99,6 +115,26 @@ namespace QT.ScriptsSet.ViewModels
                         xmlDocument.Save(saveFileDialog.FileName);
                     }
                 }, () => true);
+            }
+        }
+
+        public string InstallationTemplate
+        {
+            get => _installationTemplate;
+            set
+            {
+                _installationTemplate = value;
+                OnPropertyChanged(nameof(InstallationTemplate));
+            }
+        }
+
+        public string UpdateTemplate
+        {
+            get => _updateTemplate;
+            set
+            {
+                _updateTemplate = value;
+                OnPropertyChanged(nameof(UpdateTemplate));
             }
         }
 

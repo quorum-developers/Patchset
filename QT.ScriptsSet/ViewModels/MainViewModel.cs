@@ -27,7 +27,7 @@ namespace QT.ScriptsSet.ViewModels
 
         public MainViewModel(DataGrid dataGrid)
         {
-            _dataGrid = dataGrid;            
+            _dataGrid = dataGrid;
         }
 
         public string ApplicationVersion
@@ -81,7 +81,7 @@ namespace QT.ScriptsSet.ViewModels
                 OnPropertyChanged(nameof(Scripts));
             }
         }
-        
+
         public void Load(string pathName)
         {
             foreach (string fileName in Directory.GetFiles(pathName, "*.*"))
@@ -98,14 +98,12 @@ namespace QT.ScriptsSet.ViewModels
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            foreach (ScriptListItem scriptListItem in Scripts)
+            foreach (ScriptListItem script in Scripts)
             {
-                stringBuilder.AppendLine($"prompt @{scriptListItem.VirtualFileName}");
-                stringBuilder.AppendLine($"@{scriptListItem.VirtualFileName}");
-                stringBuilder.AppendLine(
-                    $"insert into own_patch_log(version, note) values('{ApplicationVersion}', '{scriptListItem.VirtualFileName}');");
-                stringBuilder.AppendLine("commit;");
-                stringBuilder.AppendLine();
+                stringBuilder.AppendLine(UpdateTemplate
+                    .Replace("{description}", script.Description)
+                    .Replace("{fileName}", script.VirtualFileName)
+                    .Replace("{version}", ApplicationVersion)).AppendLine();                
             }
 
             return stringBuilder.ToString();
@@ -145,10 +143,13 @@ namespace QT.ScriptsSet.ViewModels
             {
                 return _addScriptCommand ?? new SimpleCommand(() =>
                 {
-                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    OpenFileDialog openFileDialog = new OpenFileDialog { Multiselect = true };
                     if (openFileDialog.ShowDialog().Value)
                     {
-                        AddScript(openFileDialog.FileName);
+                        foreach (var fileName in openFileDialog.FileNames)
+                        {
+                            AddScript(fileName);
+                        }
                     }
                 }, () => true);
             }
