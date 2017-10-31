@@ -65,6 +65,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Commands\SimpleCommand.cs" />
+    <Compile Include="Core\Enums\ScriptPosition.cs" />
     <Compile Include="Core\ScriptListItem.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">

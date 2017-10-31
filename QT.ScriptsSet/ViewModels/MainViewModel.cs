@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using Microsoft.Win32;
 using QT.Common;
 using QT.ScriptsSet.Core;
 using QT.ScriptsSet.Core.Commands;
+using QT.ScriptsSet.Core.Enums;
 
 namespace QT.ScriptsSet.ViewModels
 {
@@ -19,6 +21,9 @@ namespace QT.ScriptsSet.ViewModels
         private int _startIndex = 1;
         private SimpleCommand _openInstallationScript;
         private SimpleCommand _addScriptCommand;
+        private SimpleCommand _addBeforeCommand;
+        private SimpleCommand _addAfterCommand;
+        private SimpleCommand _replaceScriptCommand;
         private SimpleCommand _moveUpCommand;
         private SimpleCommand _moveDownCommand;
         private SimpleCommand _deleteCommand;
@@ -86,7 +91,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             foreach (string fileName in Directory.GetFiles(pathName, "*.*"))
             {
-                AddScript(fileName);
+                AddScript(fileName, ScriptPosition.End);
             }
 
             UpdateScriptsParameters();
@@ -103,7 +108,7 @@ namespace QT.ScriptsSet.ViewModels
                 stringBuilder.AppendLine(UpdateTemplate
                     .Replace("{description}", script.Description)
                     .Replace("{fileName}", script.VirtualFileName)
-                    .Replace("{version}", ApplicationVersion)).AppendLine();                
+                    .Replace("{version}", ApplicationVersion)).AppendLine();
             }
 
             return stringBuilder.ToString();
@@ -115,7 +120,8 @@ namespace QT.ScriptsSet.ViewModels
             {
                 Directory.CreateDirectory(pathName);
 
-                File.Copy(Path.Combine(script.PathName, script.SourceFileName), Path.Combine(pathName, script.VirtualFileName));
+                File.Copy(Path.Combine(script.PathName, script.SourceFileName),
+                    Path.Combine(pathName, script.VirtualFileName));
             }
 
             File.WriteAllText(Path.Combine(pathName, "patches.sql"), GetRunSql());
@@ -148,7 +154,61 @@ namespace QT.ScriptsSet.ViewModels
                     {
                         foreach (var fileName in openFileDialog.FileNames)
                         {
-                            AddScript(fileName);
+                            AddScript(fileName, ScriptPosition.End);
+                        }
+                    }
+                }, () => true);
+            }
+        }
+
+        public ICommand AddBeforeScriptCommand
+        {
+            get
+            {
+                return _addBeforeCommand ?? new SimpleCommand(() =>
+                {
+                    if (SelectedScript != null)
+                    {
+                        OpenFileDialog openFileDialog = new OpenFileDialog();
+                        if (openFileDialog.ShowDialog().Value)
+                        {
+                            AddScript(openFileDialog.FileName, ScriptPosition.Before);
+                        }
+                    }
+                }, () => true);
+            }
+        }
+
+        public ICommand AddAfterScriptCommand
+        {
+            get
+            {
+                return _addAfterCommand ?? new SimpleCommand(() =>
+                {
+                    if (SelectedScript != null)
+                    {
+                        OpenFileDialog openFileDialog = new OpenFileDialog();
+                        if (openFileDialog.ShowDialog().Value)
+                        {
+                            AddScript(openFileDialog.FileName, ScriptPosition.After);
+                        }
+                    }
+                }, () => true);
+            }
+        }
+
+        public ICommand ReplaceScriptCommand
+        {
+            get
+            {
+                return _replaceScriptCommand ?? new SimpleCommand(() =>
+                {
+                    if (SelectedScript != null)
+                    {
+                        OpenFileDialog openFileDialog = new OpenFileDialog();
+                        if (openFileDialog.ShowDialog().Value)
+                        {
+                            ReplaceScript(openFileDialog.FileName);
                         }
                     }
                 }, () => true);
@@ -292,14 +352,47 @@ namespace QT.ScriptsSet.ViewModels
             _dataGrid.ItemsSource = Scripts;
         }
 
-        private void AddScript(string fileName)
+        private void AddScript(string fileName, ScriptPosition scriptPosition)
         {
-            Scripts.Add(new ScriptListItem()
+            int index;
+
+            switch (scriptPosition)
+            {
+                case ScriptPosition.Before:
+                    index = Scripts.IndexOf(SelectedScript);
+                    break;
+                case ScriptPosition.After:
+                    index = Scripts.IndexOf(SelectedScript) + 1;
+                    if (index > Scripts.Count)
+                    {
+                        index = Scripts.Count;
+                    }
+                    break;
+                case ScriptPosition.End:
+                    index = Scripts.Count;
+                    break;
+                default:
+                    throw new IndexOutOfRangeException($"Неизвестное значение \"{(int)scriptPosition}\" позиции скрипта.");
+            }
+
+            Scripts.Insert(index, new ScriptListItem()
             {
                 PathName = Path.GetDirectoryName(fileName),
                 SourceFileName = Path.GetFileName(fileName),
                 Description = string.Empty
             });
+        }
+
+        private void ReplaceScript(string fileName)
+        {
+            Scripts[Scripts.IndexOf(SelectedScript)] = new ScriptListItem()
+            {
+                PathName = Path.GetDirectoryName(fileName),
+                SourceFileName = Path.GetFileName(fileName),
+                Description = string.Empty
+            };
+
+            RefreshDataGrid();
         }
     }
 }

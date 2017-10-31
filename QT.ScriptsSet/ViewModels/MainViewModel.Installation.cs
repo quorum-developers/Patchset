@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using QT.ScriptsSet.Core;
 using QT.ScriptsSet.Core.Commands;
+using QT.ScriptsSet.Core.Enums;
 
 namespace QT.ScriptsSet.ViewModels
 {
@@ -102,6 +103,11 @@ namespace QT.ScriptsSet.ViewModels
                         XDocument xmlDocument = new XDocument(new XDeclaration("1.0", "utf-8", "no"));
 
                         xmlDocument.Add(new XElement("data"));
+
+                        xmlDocument.Root.Add(new XElement("header"));
+
+                        xmlDocument.Root.Element("header").Add(new XElement("version", "1.0.0"));
+
                         xmlDocument.Root.Add(new XElement("scripts"));
 
                         foreach (var script in Scripts)
@@ -148,7 +154,7 @@ namespace QT.ScriptsSet.ViewModels
 
             foreach (string scriptFileName in scriptFileNames)
             {
-                AddScript(Path.Combine(Path.GetDirectoryName(fileName), scriptFileName));
+                AddScript(Path.Combine(Path.GetDirectoryName(fileName), scriptFileName), ScriptPosition.End);
             }
 
             UpdateScriptsParameters();
