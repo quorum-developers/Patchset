@@ -7,11 +7,13 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Xml.Linq;
 using Microsoft.Win32;
 using QT.Common;
 using QT.ScriptsSet.Core;
 using QT.ScriptsSet.Core.Commands;
 using QT.ScriptsSet.Core.Enums;
+using QT.ScriptsSet.Views;
 
 namespace QT.ScriptsSet.ViewModels
 {
@@ -107,21 +109,21 @@ namespace QT.ScriptsSet.ViewModels
             {
                 stringBuilder.AppendLine(UpdateTemplate
                     .Replace("{description}", script.Description)
-                    .Replace("{fileName}", script.VirtualFileName)
+                    .Replace("{fileName}", script.TargetOnlyFileName)
                     .Replace("{version}", ApplicationVersion)).AppendLine();
             }
 
             return stringBuilder.ToString();
         }
 
-        public void CreatePatches(string pathName)
+        private void CreateSetForUpdates(string pathName)
         {
             foreach (ScriptListItem script in Scripts)
             {
                 Directory.CreateDirectory(pathName);
 
-                File.Copy(Path.Combine(script.PathName, script.SourceFileName),
-                    Path.Combine(pathName, script.VirtualFileName));
+                File.Copy(Path.Combine(script.PathName, script.SourceOnlyFileName),
+                    Path.Combine(pathName, script.TargetOnlyFileName));
             }
 
             File.WriteAllText(Path.Combine(pathName, "patches.sql"), GetRunSql());
@@ -143,6 +145,9 @@ namespace QT.ScriptsSet.ViewModels
             }
         }
 
+        /// <summary>
+        /// Команда "Добавить скрипт".
+        /// </summary>
         public ICommand AddScriptCommand
         {
             get
@@ -161,6 +166,9 @@ namespace QT.ScriptsSet.ViewModels
             }
         }
 
+        /// <summary>
+        /// Команда "Добавить скрипт перед".
+        /// </summary>
         public ICommand AddBeforeScriptCommand
         {
             get
@@ -179,6 +187,9 @@ namespace QT.ScriptsSet.ViewModels
             }
         }
 
+        /// <summary>
+        /// Команда "Добавить скрипт после".
+        /// </summary>
         public ICommand AddAfterScriptCommand
         {
             get
@@ -197,6 +208,9 @@ namespace QT.ScriptsSet.ViewModels
             }
         }
 
+        /// <summary>
+        /// Команда "Заменить скрипт".
+        /// </summary>
         public ICommand ReplaceScriptCommand
         {
             get
@@ -208,7 +222,13 @@ namespace QT.ScriptsSet.ViewModels
                         OpenFileDialog openFileDialog = new OpenFileDialog();
                         if (openFileDialog.ShowDialog().Value)
                         {
-                            ReplaceScript(openFileDialog.FileName);
+                            ReplaceScriptWindow replaceScriptWindow = new ReplaceScriptWindow(
+                                new ScriptListItem(openFileDialog.FileName, SelectedScript.Description));
+
+                            if (replaceScriptWindow.ShowDialog().Value)
+                            {
+                                ReplaceScript(replaceScriptWindow.GetData());
+                            }
                         }
                     }
                 }, () => true);
@@ -375,24 +395,38 @@ namespace QT.ScriptsSet.ViewModels
                     throw new IndexOutOfRangeException($"Неизвестное значение \"{(int)scriptPosition}\" позиции скрипта.");
             }
 
-            Scripts.Insert(index, new ScriptListItem()
-            {
-                PathName = Path.GetDirectoryName(fileName),
-                SourceFileName = Path.GetFileName(fileName),
-                Description = string.Empty
-            });
+            Scripts.Insert(index, new ScriptListItem(fileName));
         }
 
-        private void ReplaceScript(string fileName)
+        private void ReplaceScript(ScriptListItem script)
         {
-            Scripts[Scripts.IndexOf(SelectedScript)] = new ScriptListItem()
-            {
-                PathName = Path.GetDirectoryName(fileName),
-                SourceFileName = Path.GetFileName(fileName),
-                Description = string.Empty
-            };
+            Scripts[Scripts.IndexOf(SelectedScript)] = script;
 
             RefreshDataGrid();
+        }
+
+        private void SaveProjectFile(string fileName)
+        {
+            XDocument xmlDocument = new XDocument(new XDeclaration("1.0", "utf-8", "no"));
+
+            xmlDocument.Add(new XElement("data"));
+
+            xmlDocument.Root.Add(new XElement("header"));
+
+            xmlDocument.Root.Element("header").Add(new XElement("version", "1.0.0"));
+
+            xmlDocument.Root.Add(new XElement("scripts"));
+
+            foreach (var script in Scripts)
+            {
+                XElement scriptXmlElement = new XElement("script");
+                scriptXmlElement.Add(new XElement("fileName", script.TargetOnlyFileName));
+                scriptXmlElement.Add(new XElement("description", script.Description));
+
+                xmlDocument.Root.Element("scripts").Add(scriptXmlElement);
+            }
+            //DefaultExt = "ssip"
+            xmlDocument.Save(fileName);
         }
     }
 }

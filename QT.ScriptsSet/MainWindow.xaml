@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:QT.ScriptsSet"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Набор скриптов 31.10.2017"
+    Title="Набор скриптов 02.11.2017"
     Width="525"
     Height="350"
     WindowStartupLocation="CenterScreen"
@@ -17,23 +17,15 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Grid.Column="0">
             <MenuItem Header="Скрипты">
-                <MenuItem Command="{Binding ExitCommand}" Header="Выход" />
-            </MenuItem>
-            <MenuItem Header="Скрипты">
                 <MenuItem Command="{Binding OpenInstallationScriptCommand}" Header="Открыть run.sql" />
                 <MenuItem Command="{Binding OpenInstallationProjectCommand}" Header="Открыть проект..." />
                 <Separator />
-                <MenuItem Command="{Binding SaveInstallationProjectCommand}" Header="Сохранить проект как..." />
-            </MenuItem>
-            <MenuItem Header="Инсталляция БД">
+                <MenuItem Command="{Binding SaveAsProjectFileCommand}" Header="Сохранить проект как..." />
                 <Separator />
-                <MenuItem Command="{Binding CreateSetForInstallationCommand}" Header="Создать набор скриптов" />
-            </MenuItem>
-            <MenuItem Header="Обновление БД">
-                <MenuItem
-                    Name="CreateSetForUpdatesCommand"
-                    Click="CreatePatches_OnClick"
-                    Header="Создать набор скриптов" />
+                <MenuItem Command="{Binding CreateSetForInstallationCommand}" Header="Создать набор скриптов для разворачивая БД" />
+                <MenuItem Command="{Binding CreateSetForUpdatesCommand}" Header="Создать набор скриптов для обновления БД" />
+                <Separator />
+                <MenuItem Command="{Binding ExitCommand}" Header="Выход" />
             </MenuItem>
             <MenuItem Header="Справка">
                 <MenuItem Header="О программе..." />
@@ -96,11 +88,11 @@
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>
                             <DataGridTextColumn
-                                Binding="{Binding VirtualFileName}"
+                                Binding="{Binding TargetOnlyFileName}"
                                 Header="Новое имя файла"
                                 IsReadOnly="True" />
                             <DataGridTextColumn
-                                Binding="{Binding SourceFileName}"
+                                Binding="{Binding SourceOnlyFileName}"
                                 Header="Исходное имя файла"
                                 IsReadOnly="True" />
                             <DataGridTextColumn Binding="{Binding Description, Mode=TwoWay}" Header="Описание" />

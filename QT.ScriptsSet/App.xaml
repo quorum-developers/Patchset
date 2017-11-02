@@ -8,8 +8,14 @@
         <Style x:Key="ToolButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Width" Value="36" />
             <Setter Property="Height" Value="36" />
-            <Setter Property="Background" Value="White"></Setter>
+            <Setter Property="Background" Value="White" />
         </Style>
+
+        <Style x:Key="Button75X23Style" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="75" />
+            <Setter Property="Height" Value="23" />
+        </Style>
+
         <Style x:Key="ButtonImageStyle" TargetType="{x:Type Image}">
             <Setter Property="Margin" Value="5" />
         </Style>

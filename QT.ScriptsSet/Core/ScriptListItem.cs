@@ -1,34 +1,45 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace QT.ScriptsSet.Core
 {
     public class ScriptListItem
     {
+        private string _sourceFileName;
+
+        public ScriptListItem(string fileName, string description = "")
+        {
+            Id = Guid.NewGuid();
+            Description = description;
+            SourceFileName = fileName;
+        }
+
         /// <summary>
         /// Возвращает или задает id файла.
         /// </summary>
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; }
 
         /// <summary>
         /// Возвращает или задает пусть к файлу.
         /// </summary>
-        public string PathName { get; set; }
+        public string PathName => Path.GetDirectoryName(SourceFileName);
 
         /// <summary>
         /// Возвращает или задает исходное имя файла.
         /// </summary>
-        public string SourceFileName { get; set; }        
+        public string SourceOnlyFileName => Path.GetFileName(SourceFileName);
 
         /// <summary>
         /// Возвращает или задает виртуальное имя файла.
         /// </summary>
-        public string VirtualFileName {
+        public string TargetOnlyFileName
+        {
             get
             {
-                string virtualFileName = SourceFileName;
+                string virtualFileName = SourceOnlyFileName;
 
-                Match match = Regex.Match(SourceFileName, @"[A-Za-zА-Юя-я]+");
+                Match match = Regex.Match(SourceOnlyFileName, @"[A-Za-zА-Юя-я]+");
 
                 if (match.Success)
                 {
@@ -54,9 +65,11 @@ namespace QT.ScriptsSet.Core
         /// Возвращает или задает признак добавления нумерации перед именем файла.
         /// </summary>
         public bool AddNumber { get; set; } = true;
-        
+
         public string Version { get; set; }
 
         public string Index { get; set; }
+
+        public string SourceFileName { get; set; }
     }
 }

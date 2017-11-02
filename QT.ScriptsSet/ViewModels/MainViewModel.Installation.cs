@@ -25,9 +25,14 @@ namespace QT.ScriptsSet.ViewModels
                                         Environment.NewLine + "commit;";
 
         private ICommand _createSetForInstallationCommand;
+        private ICommand _createSetForUpdatesCommand;
+
         private ICommand _openInstallationProjectCommand;
-        private ICommand _saveInstallationProjectCommand;
-        
+        private ICommand _createProjectFileCommand;
+
+        /// <summary>
+        /// Команда "Создать набор скриптов для инсталляции БД".
+        /// </summary>
         public ICommand CreateSetForInstallationCommand
         {
             get
@@ -45,14 +50,35 @@ namespace QT.ScriptsSet.ViewModels
 
                         foreach (var script in Scripts)
                         {
-                            File.Copy(Path.Combine(script.PathName, script.SourceFileName), Path.Combine(folderBrowserDialog.SelectedPath, script.VirtualFileName));
+                            File.Copy(Path.Combine(script.PathName, script.SourceOnlyFileName), Path.Combine(folderBrowserDialog.SelectedPath, script.TargetOnlyFileName));
 
                             stringBuilder.AppendLine(InstallationTemplate
                                 .Replace("{description}", script.Description)
-                                .Replace("{fileName}", script.VirtualFileName));
+                                .Replace("{fileName}", script.TargetOnlyFileName));
                         }
 
                         File.WriteAllText(Path.Combine(folderBrowserDialog.SelectedPath, "run.sql"), stringBuilder.ToString());
+                    }
+                }, () => true);
+            }
+        }
+
+        /// <summary>
+        /// Команда "Создать набор скриптов для обновления БД".
+        /// </summary>
+        public ICommand CreateSetForUpdatesCommand
+        {
+            get
+            {
+                return _createSetForUpdatesCommand ?? new SimpleCommand(() =>
+                {
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        CreateSetForUpdates(Path.GetDirectoryName(saveFileDialog.FileName));
+
+                        SaveProjectFile(saveFileDialog.FileName);
                     }
                 }, () => true);
             }
@@ -64,7 +90,8 @@ namespace QT.ScriptsSet.ViewModels
             {
                 return _openInstallationProjectCommand ?? new SimpleCommand(() =>
                 {
-                    OpenFileDialog openFileDialog = new OpenFileDialog { Filter = "Проекты (*.ssip)|*.ssip|Все файлы (*.*)|*.*" };
+                    OpenFileDialog openFileDialog =
+                        new OpenFileDialog { Filter = "Проекты (*.ssip)|*.ssip|Все файлы (*.*)|*.*" };
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         Scripts.Clear();
@@ -73,12 +100,14 @@ namespace QT.ScriptsSet.ViewModels
 
                         foreach (XElement scriptXmlElement in xmlDocument.Root.Element("scripts").Elements())
                         {
-                            ScriptListItem scriptListItem = new ScriptListItem()
-                            {
-                                SourceFileName = Path.Combine(scriptXmlElement.Element("fileName").Value),
-                                PathName = Path.GetDirectoryName(openFileDialog.FileName),
-                                Description = scriptXmlElement.Element("description").Value
-                            };
+                            ScriptListItem scriptListItem =
+                                new ScriptListItem(
+                                    Path.Combine(
+                                        Path.GetDirectoryName(openFileDialog.FileName),
+                                        scriptXmlElement.Element("fileName").Value))
+                                {
+                                    Description = scriptXmlElement.Element("description").Value
+                                };
 
                             Scripts.Add(scriptListItem);
                         }
@@ -87,38 +116,24 @@ namespace QT.ScriptsSet.ViewModels
             }
         }
 
-        public ICommand SaveInstallationProjectCommand
+        /// <summary>
+        /// Команда "Сохранить файл проекта как".
+        /// </summary>
+        public ICommand SaveAsProjectFileCommand
         {
             get
             {
-                return _saveInstallationProjectCommand ?? new SimpleCommand(() =>
+                return _createProjectFileCommand ?? new SimpleCommand(() =>
                 {
                     SaveFileDialog saveFileDialog = new SaveFileDialog
                     {
                         Filter = "Проекты (*.ssip)|*.ssip|Все файлы (*.*)|*.*",
                         DefaultExt = "ssip"
                     };
+
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        XDocument xmlDocument = new XDocument(new XDeclaration("1.0", "utf-8", "no"));
-
-                        xmlDocument.Add(new XElement("data"));
-
-                        xmlDocument.Root.Add(new XElement("header"));
-
-                        xmlDocument.Root.Element("header").Add(new XElement("version", "1.0.0"));
-
-                        xmlDocument.Root.Add(new XElement("scripts"));
-
-                        foreach (var script in Scripts)
-                        {
-                            XElement scriptXmlElement = new XElement("script");
-                            scriptXmlElement.Add(new XElement("fileName", script.SourceFileName));
-                            scriptXmlElement.Add(new XElement("description", script.Description));
-
-                            xmlDocument.Root.Element("scripts").Add(scriptXmlElement);
-                        }
-                        xmlDocument.Save(saveFileDialog.FileName);
+                        SaveProjectFile(saveFileDialog.FileName);
                     }
                 }, () => true);
             }

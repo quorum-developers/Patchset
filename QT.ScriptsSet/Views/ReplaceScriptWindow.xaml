@@ -1,0 +1,37 @@
+﻿<Window
+    x:Class="QT.ScriptsSet.Views.ReplaceScriptWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:QT.ScriptsSet.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Замена скрипта"
+    Width="500"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <StackPanel>
+        <TextBlock Text="Файл" />
+        <DockPanel LastChildFill="True">
+            <Button
+                Width="32"
+                Content="..."
+                DockPanel.Dock="Right" />
+            <TextBox Text="{Binding FileName}" />
+        </DockPanel>
+        <TextBlock Text="Описание" />
+        <TextBox Text="{Binding Description}" />
+        <DockPanel LastChildFill="False">
+            <Button
+                Content="Отмена"
+                DockPanel.Dock="Right"
+                IsCancel="True"
+                Style="{StaticResource Button75X23Style}" />
+            <Button
+                Command="{Binding SaveCommand}"
+                Content="Да"
+                DockPanel.Dock="Right"
+                Style="{StaticResource Button75X23Style}" />
+        </DockPanel>
+    </StackPanel>
+</Window>
