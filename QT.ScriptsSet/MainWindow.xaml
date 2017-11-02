@@ -17,10 +17,11 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Grid.Column="0">
             <MenuItem Header="Скрипты">
-                <MenuItem Command="{Binding OpenInstallationScriptCommand}" Header="Открыть run.sql" />
-                <MenuItem Command="{Binding OpenInstallationProjectCommand}" Header="Открыть проект..." />
+                <MenuItem Command="{Binding OpenRunSqlFileCommand}" Header="Открыть run.sql" />
+                <MenuItem Command="{Binding OpenProjectCommand}" Header="Открыть проект..." />
                 <Separator />
-                <MenuItem Command="{Binding SaveAsProjectFileCommand}" Header="Сохранить проект как..." />
+                <MenuItem Command="{Binding SaveProjectCommand}" Header="Сохранить проект" />
+                <MenuItem Command="{Binding SaveAsProjectCommand}" Header="Сохранить проект как..." />
                 <Separator />
                 <MenuItem Command="{Binding CreateSetForInstallationCommand}" Header="Создать набор скриптов для разворачивая БД" />
                 <MenuItem Command="{Binding CreateSetForUpdatesCommand}" Header="Создать набор скриптов для обновления БД" />
@@ -47,7 +48,7 @@
                         <Button
                             Width="32"
                             Height="32"
-                            Command="{Binding MoveUp}"
+                            Command="{Binding MoveUpScriptCommand}"
                             Style="{StaticResource ToolButtonStyle}"
                             ToolTip="Переместить вверх">
                             <Image Source="Images/MoveUp.png" Style="{StaticResource ButtonImageStyle}" />
@@ -55,7 +56,7 @@
                         <Button
                             Width="32"
                             Height="32"
-                            Command="{Binding MoveDown}"
+                            Command="{Binding MoveDownScriptCommand}"
                             Style="{StaticResource ToolButtonStyle}"
                             ToolTip="Переместить вниз">
                             <Image Source="Images/MoveDown.png" Style="{StaticResource ButtonImageStyle}" />
@@ -63,7 +64,7 @@
                         <Button
                             Width="32"
                             Height="32"
-                            Command="{Binding Delete}"
+                            Command="{Binding DeleteScriptCommand}"
                             Style="{StaticResource ToolButtonStyle}"
                             ToolTip="Удалить">
                             <Image Source="Images/Delete.png" Style="{StaticResource ButtonImageStyle}" />

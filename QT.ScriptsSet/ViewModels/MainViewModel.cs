@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Linq;
-using Microsoft.Win32;
 using QT.Common;
 using QT.ScriptsSet.Core;
 using QT.ScriptsSet.Core.Commands;
@@ -20,15 +19,15 @@ namespace QT.ScriptsSet.ViewModels
     public partial class MainViewModel : ViewModelBase, IDataErrorInfo
     {
         private string _applicationVersion;
-        private int _startIndex = 1;
-        private SimpleCommand _openInstallationScript;
+        private int _startIndex = 1;        
+        private SimpleCommand _openRunSqlFileCommand;
         private SimpleCommand _addScriptCommand;
         private SimpleCommand _addBeforeCommand;
         private SimpleCommand _addAfterCommand;
         private SimpleCommand _replaceScriptCommand;
         private SimpleCommand _moveUpCommand;
-        private SimpleCommand _moveDownCommand;
-        private SimpleCommand _deleteCommand;
+        private SimpleCommand _moveDownScriptCommand;
+        private SimpleCommand _deleteScriptCommand;
         private ObservableCollection<ScriptListItem> _scripts = new ObservableCollection<ScriptListItem>();
         private DataGrid _dataGrid;
 
@@ -128,193 +127,7 @@ namespace QT.ScriptsSet.ViewModels
 
             File.WriteAllText(Path.Combine(pathName, "patches.sql"), GetRunSql());
         }
-
-        public ICommand OpenInstallationScriptCommand
-        {
-            get
-            {
-                return _openInstallationScript ?? new SimpleCommand(() =>
-                {
-                    OpenFileDialog openFileDialog = new OpenFileDialog();
-                    if (openFileDialog.ShowDialog().Value)
-                    {
-                        OpenInstallationScript(openFileDialog.FileName);
-                    }
-
-                }, () => true);
-            }
-        }
-
-        /// <summary>
-        /// Команда "Добавить скрипт".
-        /// </summary>
-        public ICommand AddScriptCommand
-        {
-            get
-            {
-                return _addScriptCommand ?? new SimpleCommand(() =>
-                {
-                    OpenFileDialog openFileDialog = new OpenFileDialog { Multiselect = true };
-                    if (openFileDialog.ShowDialog().Value)
-                    {
-                        foreach (var fileName in openFileDialog.FileNames)
-                        {
-                            AddScript(fileName, ScriptPosition.End);
-                        }
-                    }
-                }, () => true);
-            }
-        }
-
-        /// <summary>
-        /// Команда "Добавить скрипт перед".
-        /// </summary>
-        public ICommand AddBeforeScriptCommand
-        {
-            get
-            {
-                return _addBeforeCommand ?? new SimpleCommand(() =>
-                {
-                    if (SelectedScript != null)
-                    {
-                        OpenFileDialog openFileDialog = new OpenFileDialog();
-                        if (openFileDialog.ShowDialog().Value)
-                        {
-                            AddScript(openFileDialog.FileName, ScriptPosition.Before);
-                        }
-                    }
-                }, () => true);
-            }
-        }
-
-        /// <summary>
-        /// Команда "Добавить скрипт после".
-        /// </summary>
-        public ICommand AddAfterScriptCommand
-        {
-            get
-            {
-                return _addAfterCommand ?? new SimpleCommand(() =>
-                {
-                    if (SelectedScript != null)
-                    {
-                        OpenFileDialog openFileDialog = new OpenFileDialog();
-                        if (openFileDialog.ShowDialog().Value)
-                        {
-                            AddScript(openFileDialog.FileName, ScriptPosition.After);
-                        }
-                    }
-                }, () => true);
-            }
-        }
-
-        /// <summary>
-        /// Команда "Заменить скрипт".
-        /// </summary>
-        public ICommand ReplaceScriptCommand
-        {
-            get
-            {
-                return _replaceScriptCommand ?? new SimpleCommand(() =>
-                {
-                    if (SelectedScript != null)
-                    {
-                        OpenFileDialog openFileDialog = new OpenFileDialog();
-                        if (openFileDialog.ShowDialog().Value)
-                        {
-                            ReplaceScriptWindow replaceScriptWindow = new ReplaceScriptWindow(
-                                new ScriptListItem(openFileDialog.FileName, SelectedScript.Description));
-
-                            if (replaceScriptWindow.ShowDialog().Value)
-                            {
-                                ReplaceScript(replaceScriptWindow.GetData());
-                            }
-                        }
-                    }
-                }, () => true);
-            }
-        }
-
-        public ICommand MoveUp
-        {
-            get
-            {
-                return _moveUpCommand ?? new SimpleCommand(() =>
-                {
-                    if (SelectedScript != null)
-                    {
-                        int index = Scripts.Select((v, i) => new
-                        {
-                            Scrip = v,
-                            Index = i
-                        }).First(v => v.Scrip.Id == SelectedScript.Id).Index;
-
-                        if (index > 0)
-                        {
-                            Scripts.Move(index, index - 1);
-
-                            UpdateScriptsParameters();
-
-                            RefreshDataGrid();
-
-                            SelectedScript = Scripts[index - 1];
-
-                            _dataGrid.Focus();
-                        }
-                    }
-                }, () => true);
-            }
-        }
-
-        public ICommand MoveDown
-        {
-            get
-            {
-                return _moveDownCommand ?? new SimpleCommand(() =>
-                {
-                    if (SelectedScript != null)
-                    {
-                        int index = Scripts.Select((v, i) => new
-                        {
-                            Scrip = v,
-                            Index = i
-                        }).First(v => v.Scrip.Id == SelectedScript.Id).Index;
-
-                        if (index < Scripts.Count - 1)
-                        {
-                            Scripts.Move(index, index + 1);
-
-                            UpdateScriptsParameters();
-
-                            RefreshDataGrid();
-
-                            SelectedScript = Scripts[index + 1];
-
-                            _dataGrid.Focus();
-                        }
-                    }
-                }, () => true);
-            }
-        }
-
-        public ICommand Delete
-        {
-            get
-            {
-                return _deleteCommand ?? new SimpleCommand(() =>
-                {
-                    if (SelectedScript != null)
-                    {
-                        Scripts.Remove(this.SelectedScript);
-
-                        UpdateScriptsParameters();
-
-                        RefreshDataGrid();
-                    }
-                }, () => true);
-            }
-        }
-
+        
         public ICommand ExitCommand
         {
             get
@@ -394,13 +207,17 @@ namespace QT.ScriptsSet.ViewModels
                 default:
                     throw new IndexOutOfRangeException($"Неизвестное значение \"{(int)scriptPosition}\" позиции скрипта.");
             }
-
+            
             Scripts.Insert(index, new ScriptListItem(fileName));
+
+            UpdateScriptsParameters();
         }
 
         private void ReplaceScript(ScriptListItem script)
         {
             Scripts[Scripts.IndexOf(SelectedScript)] = script;
+
+            UpdateScriptsParameters();
 
             RefreshDataGrid();
         }
