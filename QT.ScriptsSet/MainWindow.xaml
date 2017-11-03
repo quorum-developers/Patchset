@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:QT.ScriptsSet"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Набор скриптов 02.11.2017"
+    Title="Набор скриптов 03.11.2017"
     Width="525"
     Height="350"
     WindowStartupLocation="CenterScreen"
@@ -17,6 +17,7 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Grid.Column="0">
             <MenuItem Header="Скрипты">
+                <MenuItem Command="{Binding NewProjectCommand}" Header="Новый проект" />
                 <MenuItem Command="{Binding OpenRunSqlFileCommand}" Header="Открыть run.sql" />
                 <MenuItem Command="{Binding OpenProjectCommand}" Header="Открыть проект..." />
                 <Separator />
@@ -27,6 +28,9 @@
                 <MenuItem Command="{Binding CreateSetForUpdatesCommand}" Header="Создать набор скриптов для обновления БД" />
                 <Separator />
                 <MenuItem Command="{Binding ExitCommand}" Header="Выход" />
+            </MenuItem>
+            <MenuItem Header="Правка">
+                <MenuItem Command="{Binding DescriptionAsTargetFileNameCommand}" Header="Описание как имя файла" />
             </MenuItem>
             <MenuItem Header="Справка">
                 <MenuItem Header="О программе..." />

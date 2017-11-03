@@ -13,12 +13,26 @@ namespace QT.ScriptsSet.ViewModels
 {
     public partial class MainViewModel
     {
+        private ICommand _newProjectCommand;
         private ICommand _openProjectCommand;
         private ICommand _saveProjectCommand;
         private ICommand _saveAsProjectCommand;
         private ICommand _createSetForInstallationCommand;
         private ICommand _createSetForUpdatesCommand;
-        private SimpleCommand _moveUpScriptCommand;
+        private ICommand _moveUpScriptCommand;
+        private ICommand _descriptionAsTargetFileNameCommand;
+
+        public ICommand NewProjectCommand
+        {
+            get
+            {
+                return _newProjectCommand ?? new SimpleCommand(() =>
+                {
+                    _projectFileName = string.Empty;
+                    Scripts.Clear();
+                }, () => true);
+            }
+        }
 
         /// <summary>
         /// Команда "Открыть проект".
@@ -30,7 +44,7 @@ namespace QT.ScriptsSet.ViewModels
                 return _openProjectCommand ?? new SimpleCommand(() =>
                 {
                     OpenFileDialog openFileDialog =
-                        new OpenFileDialog {Filter = "Проекты (*.ssip)|*.ssip|Все файлы (*.*)|*.*"};
+                        new OpenFileDialog { Filter = "Проекты (*.ssip)|*.ssip|Все файлы (*.*)|*.*" };
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         Scripts.Clear();
@@ -175,7 +189,7 @@ namespace QT.ScriptsSet.ViewModels
             {
                 return _addScriptCommand ?? new SimpleCommand(() =>
                 {
-                    OpenFileDialog openFileDialog = new OpenFileDialog {Multiselect = true};
+                    OpenFileDialog openFileDialog = new OpenFileDialog { Multiselect = true };
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         foreach (var fileName in openFileDialog.FileNames)
@@ -326,6 +340,22 @@ namespace QT.ScriptsSet.ViewModels
 
                         RefreshDataGrid();
                     }
+                }, () => true);
+            }
+        }
+
+        public ICommand DescriptionAsTargetFileNameCommand
+        {
+            get
+            {
+                return _descriptionAsTargetFileNameCommand ?? new SimpleCommand(() =>
+                {
+                    foreach (var script in Scripts)
+                    {
+                        script.Description = script.TargetOnlyFileName;
+                    }
+
+                    RefreshDataGrid();
                 }, () => true);
             }
         }
