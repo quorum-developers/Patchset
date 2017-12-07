@@ -19,7 +19,7 @@ namespace QT.ScriptsSet.ViewModels
     public partial class MainViewModel : ViewModelBase, IDataErrorInfo
     {
         private string _applicationVersion;
-        private int _startIndex = 1;        
+        private int _startIndex = 1;
         private SimpleCommand _openRunSqlFileCommand;
         private SimpleCommand _addScriptCommand;
         private SimpleCommand _addBeforeCommand;
@@ -127,7 +127,7 @@ namespace QT.ScriptsSet.ViewModels
 
             File.WriteAllText(Path.Combine(pathName, "patches.sql"), GetRunSql());
         }
-        
+
         public ICommand ExitCommand
         {
             get
@@ -207,7 +207,7 @@ namespace QT.ScriptsSet.ViewModels
                 default:
                     throw new IndexOutOfRangeException($"Неизвестное значение \"{(int)scriptPosition}\" позиции скрипта.");
             }
-            
+
             Scripts.Insert(index, new ScriptListItem(fileName));
 
             UpdateScriptsParameters();
@@ -230,7 +230,14 @@ namespace QT.ScriptsSet.ViewModels
 
             xmlDocument.Root.Add(new XElement("header"));
 
-            xmlDocument.Root.Element("header").Add(new XElement("version", "1.0.0"));
+            xmlDocument.Root.Element("header").Add(
+                new XElement("version", "1.0.0"));
+
+            xmlDocument.Root.Add(new XElement("project"));
+
+            xmlDocument.Root.Element("project").Add(
+                new XElement("version", ApplicationVersion),
+                new XElement("startIndex", StartIndex));
 
             xmlDocument.Root.Add(new XElement("scripts"));
 

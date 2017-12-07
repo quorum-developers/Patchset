@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:QT.ScriptsSet"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Набор скриптов 03.11.2017"
+    Title="Набор скриптов 07.12.2017"
     Width="525"
     Height="350"
     WindowStartupLocation="CenterScreen"
@@ -89,6 +89,10 @@
                                 <MenuItem Command="{Binding AddAfterScriptCommand}" Header="Добавить после скрипта" />
                                 <Separator />
                                 <MenuItem Command="{Binding ReplaceScriptCommand}" Header="Заменить скрипт" />
+                                <Separator />
+                                <MenuItem Command="{Binding DeleteScriptCommand}" Header="Удалить" />
+                                <Separator />
+                                <MenuItem Command="{Binding OpenFolderInExplorerCommand}" Header="Открыть папку в проводнике" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>

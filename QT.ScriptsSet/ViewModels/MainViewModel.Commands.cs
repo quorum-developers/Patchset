@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -21,6 +23,7 @@ namespace QT.ScriptsSet.ViewModels
         private ICommand _createSetForUpdatesCommand;
         private ICommand _moveUpScriptCommand;
         private ICommand _descriptionAsTargetFileNameCommand;
+        private ICommand _openFolderInExplorerCommand;
 
         public ICommand NewProjectCommand
         {
@@ -50,6 +53,11 @@ namespace QT.ScriptsSet.ViewModels
                         Scripts.Clear();
 
                         XDocument xmlDocument = XDocument.Parse(File.ReadAllText(openFileDialog.FileName));
+
+                        ApplicationVersion = xmlDocument.Root.Element("project")?.Element("version")?.Value ??
+                                             string.Empty;
+
+                        StartIndex = Convert.ToInt32(xmlDocument.Root.Element("project")?.Element("startIndex")?.Value ?? "0");
 
                         foreach (XElement scriptXmlElement in xmlDocument.Root.Element("scripts").Elements())
                         {
@@ -358,6 +366,20 @@ namespace QT.ScriptsSet.ViewModels
                     RefreshDataGrid();
                 }, () => true);
             }
+        }
+
+        public ICommand OpenFolderInExplorerCommand
+        {
+            get
+            {
+                return _openFolderInExplorerCommand ?? new SimpleCommand(() =>
+                {
+                    if (SelectedScript != null)
+                    {
+                        Process.Start("explorer.exe", SelectedScript.PathName);
+                    }
+                }, () => true);
+            }           
         }
     }
 }
