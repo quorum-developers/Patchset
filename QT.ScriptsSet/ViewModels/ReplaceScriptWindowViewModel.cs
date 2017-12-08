@@ -11,7 +11,7 @@ namespace QT.ScriptsSet.ViewModels
         private Window _window;
         private string _fileName;
         private string _description;
-        private SimpleCommand _saveCommand;
+        private DelegateCommand _saveCommand;
 
         public ReplaceScriptWindowViewModel(Window window, ScriptListItem script)
         {
@@ -44,7 +44,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _saveCommand ?? new SimpleCommand(() =>
+                return _saveCommand ?? new DelegateCommand(() =>
                 {
                     _window.DialogResult = true;
                 }, () => true);

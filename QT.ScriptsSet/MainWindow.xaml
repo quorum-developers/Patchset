@@ -6,8 +6,8 @@
     xmlns:local="clr-namespace:QT.ScriptsSet"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Набор скриптов 08.12.2017"
-    Width="525"
-    Height="350"
+    Width="790"
+    Height="590"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Grid>
@@ -18,8 +18,8 @@
         <Menu Grid.Row="0" Grid.Column="0">
             <MenuItem Header="Скрипты">
                 <MenuItem Command="{Binding NewProjectCommand}" Header="Новый проект" />
-                <MenuItem Command="{Binding OpenRunSqlFileCommand}" Header="Открыть run.sql" />
                 <MenuItem Command="{Binding OpenProjectCommand}" Header="Открыть проект..." />
+                <MenuItem Command="{Binding OpenOutputFileCommand}" Header="Открыть выходной файл" />
                 <Separator />
                 <MenuItem Command="{Binding SaveProjectCommand}" Header="Сохранить проект" />
                 <MenuItem Command="{Binding SaveAsProjectCommand}" Header="Сохранить проект как..." />

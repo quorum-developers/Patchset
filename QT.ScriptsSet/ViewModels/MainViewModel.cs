@@ -18,14 +18,14 @@ namespace QT.ScriptsSet.ViewModels
     {
         private string _applicationVersion;
         private int _startIndex = 1;
-        private SimpleCommand _openRunSqlFileCommand;
-        private SimpleCommand _addScriptCommand;
-        private SimpleCommand _addBeforeCommand;
-        private SimpleCommand _addAfterCommand;
-        private SimpleCommand _replaceScriptCommand;
-        private SimpleCommand _moveUpCommand;
-        private SimpleCommand _moveDownScriptCommand;
-        private SimpleCommand _deleteScriptCommand;
+        private DelegateCommand _openOutputFileCommand;
+        private DelegateCommand _addScriptCommand;
+        private DelegateCommand _addBeforeCommand;
+        private DelegateCommand _addAfterCommand;
+        private DelegateCommand _replaceScriptCommand;
+        private DelegateCommand _moveUpCommand;
+        private DelegateCommand _moveDownScriptCommand;
+        private DelegateCommand _deleteScriptCommand;
         private ObservableCollection<ScriptListItem> _scripts = new ObservableCollection<ScriptListItem>();
         private DataGrid _dataGrid;
 
@@ -68,7 +68,7 @@ namespace QT.ScriptsSet.ViewModels
 
         public ScriptListItem SelectedScript
         {
-            get { return _selectedScript; }
+            get => _selectedScript;
             set
             {
                 _selectedScript = value;
@@ -130,7 +130,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return new SimpleCommand(() => Application.Current.Shutdown(), () => true);
+                return new DelegateCommand(() => Application.Current.Shutdown(), () => true);
             }
         }
 
@@ -220,7 +220,7 @@ namespace QT.ScriptsSet.ViewModels
             RefreshDataGrid();
         }
 
-        private void SaveProjectFile(string fileName)
+        private void SaveProjectFile(string fileName, bool creatingSet)
         {
             XDocument xmlDocument = new XDocument(new XDeclaration("1.0", "utf-8", "no"));
 
@@ -242,7 +242,7 @@ namespace QT.ScriptsSet.ViewModels
             foreach (var script in Scripts)
             {
                 XElement scriptXmlElement = new XElement("script");
-                scriptXmlElement.Add(new XElement("fileName", script.TargetOnlyFileName));
+                scriptXmlElement.Add(new XElement("fileName", creatingSet ? script.TargetOnlyFileName : script.SourceOnlyFileName));
                 scriptXmlElement.Add(new XElement("description", script.Description));
 
                 xmlDocument.Root.Element("scripts").Add(scriptXmlElement);

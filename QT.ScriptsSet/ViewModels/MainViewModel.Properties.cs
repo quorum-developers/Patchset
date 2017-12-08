@@ -10,7 +10,9 @@
             set
             {
                 _projectFileName = value;
-                OnPropertyChanged(nameof(ProjectFileName));
+
+
+                OnPropertyChanged(nameof(ProjectFileName));                             
             }
         }
     }

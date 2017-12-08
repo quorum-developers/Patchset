@@ -36,7 +36,7 @@ namespace QT.ScriptsSet.ViewModels
             }
         }
 
-        private void OpenInstallationScript(string fileName)
+        private void OpenOutputFile(string fileName)
         {
             Scripts.Clear();
 

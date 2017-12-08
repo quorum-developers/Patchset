@@ -70,7 +70,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Commands\SimpleCommand.cs" />
+    <Compile Include="Core\Commands\DelegateCommand.cs" />
     <Compile Include="Core\Enums\ScriptPosition.cs" />
     <Compile Include="Core\ScriptListItem.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

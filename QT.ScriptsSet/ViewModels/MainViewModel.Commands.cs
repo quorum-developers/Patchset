@@ -16,7 +16,7 @@ namespace QT.ScriptsSet.ViewModels
     public partial class MainViewModel
     {
         private ICommand _newProjectCommand;
-        private ICommand _openProjectCommand;
+        private DelegateCommand _openProjectCommand;
         private ICommand _saveProjectCommand;
         private ICommand _saveAsProjectCommand;
         private ICommand _createSetForInstallationCommand;
@@ -29,9 +29,9 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _newProjectCommand ?? new SimpleCommand(() =>
+                return _newProjectCommand ?? new DelegateCommand(() =>
                 {
-                    _projectFileName = string.Empty;
+                    ProjectFileName = string.Empty;
                     Scripts.Clear();
                 }, () => true);
             }
@@ -40,14 +40,14 @@ namespace QT.ScriptsSet.ViewModels
         /// <summary>
         /// Команда "Открыть проект".
         /// </summary>
-        public ICommand OpenProjectCommand
+        public DelegateCommand OpenProjectCommand
         {
             get
             {
-                return _openProjectCommand ?? new SimpleCommand(() =>
+                return _openProjectCommand ?? new DelegateCommand(() =>
                 {
                     OpenFileDialog openFileDialog =
-                        new OpenFileDialog { Filter = "Проекты (*.ssip)|*.ssip|Все файлы (*.*)|*.*" };
+                        new OpenFileDialog { Filter = @"Проекты (*.ssip)|*.ssip|Все файлы (*.*)|*.*" };
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         Scripts.Clear();
@@ -75,8 +75,31 @@ namespace QT.ScriptsSet.ViewModels
 
                         StartIndex = Convert.ToInt32(xmlDocument.Root.Element("project")?.Element("startIndex")?.Value ?? "0");
 
-                        _projectFileName = openFileDialog.FileName;
+                        ProjectFileName = openFileDialog.FileName;
                     }
+                }, () => true);
+            }
+        }
+
+        /// <summary>
+        /// Команда "Открыть выходной файл".
+        /// </summary>
+        public ICommand OpenOutputFileCommand
+        {
+            get
+            {
+                return _openOutputFileCommand ?? new DelegateCommand(() =>
+                {
+                    OpenFileDialog openFileDialog = new OpenFileDialog()
+                    {
+                        Filter = @"Выходной файл (*.sql)|*.sql|Все файлы (*.*)|*.*"
+                    };
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        OpenOutputFile(openFileDialog.FileName);
+                    }
+
                 }, () => true);
             }
         }
@@ -88,9 +111,9 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _saveProjectCommand ?? new SimpleCommand(() =>
+                return _saveProjectCommand ?? new DelegateCommand(() =>
                 {
-                    SaveProjectFile(_projectFileName);
+                    SaveProjectFile(ProjectFileName, false);
                 }, () => !string.IsNullOrWhiteSpace(ProjectFileName));
             }
         }
@@ -102,7 +125,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _saveAsProjectCommand ?? new SimpleCommand(() =>
+                return _saveAsProjectCommand ?? new DelegateCommand(() =>
                 {
                     SaveFileDialog saveFileDialog = new SaveFileDialog
                     {
@@ -112,7 +135,7 @@ namespace QT.ScriptsSet.ViewModels
 
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        SaveProjectFile(saveFileDialog.FileName);
+                        SaveProjectFile(saveFileDialog.FileName, false);
                     }
                 }, () => true);
             }
@@ -125,7 +148,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _createSetForInstallationCommand ?? new SimpleCommand(() =>
+                return _createSetForInstallationCommand ?? new DelegateCommand(() =>
                 {
                     FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
                     if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
@@ -160,7 +183,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _createSetForUpdatesCommand ?? new SimpleCommand(() =>
+                return _createSetForUpdatesCommand ?? new DelegateCommand(() =>
                 {
                     SaveFileDialog saveFileDialog = new SaveFileDialog();
 
@@ -168,24 +191,8 @@ namespace QT.ScriptsSet.ViewModels
                     {
                         CreateSetForUpdates(Path.GetDirectoryName(saveFileDialog.FileName));
 
-                        SaveProjectFile(saveFileDialog.FileName);
+                        SaveProjectFile(saveFileDialog.FileName, true);
                     }
-                }, () => true);
-            }
-        }
-
-        public ICommand OpenRunSqlFileCommand
-        {
-            get
-            {
-                return _openRunSqlFileCommand ?? new SimpleCommand(() =>
-                {
-                    OpenFileDialog openFileDialog = new OpenFileDialog();
-                    if (openFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        OpenInstallationScript(openFileDialog.FileName);
-                    }
-
                 }, () => true);
             }
         }
@@ -197,7 +204,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _addScriptCommand ?? new SimpleCommand(() =>
+                return _addScriptCommand ?? new DelegateCommand(() =>
                 {
                     OpenFileDialog openFileDialog = new OpenFileDialog { Multiselect = true };
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -218,7 +225,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _addBeforeCommand ?? new SimpleCommand(() =>
+                return _addBeforeCommand ?? new DelegateCommand(() =>
                 {
                     if (SelectedScript != null)
                     {
@@ -228,7 +235,7 @@ namespace QT.ScriptsSet.ViewModels
                             AddScript(openFileDialog.FileName, ScriptPosition.Before);
                         }
                     }
-                }, () => true);
+                }, () => SelectedScript != null);
             }
         }
 
@@ -239,7 +246,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _addAfterCommand ?? new SimpleCommand(() =>
+                return _addAfterCommand ?? new DelegateCommand(() =>
                 {
                     if (SelectedScript != null)
                     {
@@ -249,7 +256,7 @@ namespace QT.ScriptsSet.ViewModels
                             AddScript(openFileDialog.FileName, ScriptPosition.After);
                         }
                     }
-                }, () => true);
+                }, () => SelectedScript != null);
             }
         }
 
@@ -260,7 +267,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _replaceScriptCommand ?? new SimpleCommand(() =>
+                return _replaceScriptCommand ?? new DelegateCommand(() =>
                 {
                     if (SelectedScript != null)
                     {
@@ -276,11 +283,11 @@ namespace QT.ScriptsSet.ViewModels
                             }
                         }
                     }
-                }, () => true);
+                }, () => SelectedScript != null);
             }
         }
 
-        public ICommand MoveUpScriptCommand => _moveUpScriptCommand ?? new SimpleCommand(() =>
+        public ICommand MoveUpScriptCommand => _moveUpScriptCommand ?? new DelegateCommand(() =>
         {
             if (SelectedScript != null)
             {
@@ -303,12 +310,12 @@ namespace QT.ScriptsSet.ViewModels
                     _dataGrid.Focus();
                 }
             }
-        }, () => true);
+        }, () => SelectedScript != null);
 
         /// <summary>
         /// Команда "Переместить скрипт вниз".
         /// </summary>
-        public ICommand MoveDownScriptCommand => _moveDownScriptCommand ?? new SimpleCommand(() =>
+        public ICommand MoveDownScriptCommand => _moveDownScriptCommand ?? new DelegateCommand(() =>
         {
             if (SelectedScript != null)
             {
@@ -331,7 +338,7 @@ namespace QT.ScriptsSet.ViewModels
                     _dataGrid.Focus();
                 }
             }
-        }, () => true);
+        }, () => SelectedScript != null);
 
         /// <summary>
         /// Команда "Удалить скрипт".
@@ -340,7 +347,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _deleteScriptCommand ?? new SimpleCommand(() =>
+                return _deleteScriptCommand ?? new DelegateCommand(() =>
                 {
                     if (SelectedScript != null)
                     {
@@ -350,7 +357,7 @@ namespace QT.ScriptsSet.ViewModels
 
                         RefreshDataGrid();
                     }
-                }, () => true);
+                }, () => SelectedScript != null);
             }
         }
 
@@ -358,7 +365,7 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _descriptionAsTargetFileNameCommand ?? new SimpleCommand(() =>
+                return _descriptionAsTargetFileNameCommand ?? new DelegateCommand(() =>
                 {
                     foreach (var script in Scripts)
                     {
@@ -374,13 +381,13 @@ namespace QT.ScriptsSet.ViewModels
         {
             get
             {
-                return _openFolderInExplorerCommand ?? new SimpleCommand(() =>
+                return _openFolderInExplorerCommand ?? new DelegateCommand(() =>
                 {
                     if (SelectedScript != null)
                     {
                         Process.Start("explorer.exe", Path.GetDirectoryName(SelectedScript.SourceFileName));
                     }
-                }, () => true);
+                }, () => SelectedScript != null);
             }
         }
     }
