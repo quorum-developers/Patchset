@@ -54,17 +54,14 @@ namespace QT.ScriptsSet.ViewModels
 
                         XDocument xmlDocument = XDocument.Parse(File.ReadAllText(openFileDialog.FileName));
 
-                        ApplicationVersion = xmlDocument.Root.Element("project")?.Element("version")?.Value ??
-                                             string.Empty;
-
-                        StartIndex = Convert.ToInt32(xmlDocument.Root.Element("project")?.Element("startIndex")?.Value ?? "0");
+                        string pathName = Path.GetDirectoryName(openFileDialog.FileName);
 
                         foreach (XElement scriptXmlElement in xmlDocument.Root.Element("scripts").Elements())
                         {
                             ScriptListItem scriptListItem =
                                 new ScriptListItem(
                                     Path.Combine(
-                                        Path.GetDirectoryName(openFileDialog.FileName),
+                                        pathName,
                                         scriptXmlElement.Element("fileName").Value))
                                 {
                                     Description = scriptXmlElement.Element("description").Value
@@ -72,6 +69,11 @@ namespace QT.ScriptsSet.ViewModels
 
                             Scripts.Add(scriptListItem);
                         }
+
+                        ApplicationVersion = xmlDocument.Root.Element("project")?.Element("version")?.Value ??
+                                             string.Empty;
+
+                        StartIndex = Convert.ToInt32(xmlDocument.Root.Element("project")?.Element("startIndex")?.Value ?? "0");
 
                         _projectFileName = openFileDialog.FileName;
                     }
@@ -136,7 +138,7 @@ namespace QT.ScriptsSet.ViewModels
 
                         foreach (var script in Scripts)
                         {
-                            File.Copy(Path.Combine(script.PathName, script.SourceOnlyFileName),
+                            File.Copy(script.SourceFileName,
                                 Path.Combine(folderBrowserDialog.SelectedPath, script.TargetOnlyFileName));
 
                             stringBuilder.AppendLine(InstallationTemplate
@@ -376,10 +378,10 @@ namespace QT.ScriptsSet.ViewModels
                 {
                     if (SelectedScript != null)
                     {
-                        Process.Start("explorer.exe", SelectedScript.PathName);
+                        Process.Start("explorer.exe", Path.GetDirectoryName(SelectedScript.SourceFileName));
                     }
                 }, () => true);
-            }           
+            }
         }
     }
 }

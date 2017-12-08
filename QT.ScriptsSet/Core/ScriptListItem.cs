@@ -4,10 +4,11 @@ using System.Text.RegularExpressions;
 
 namespace QT.ScriptsSet.Core
 {
+    /// <summary>
+    /// Описывает элемент списка скриптов.
+    /// </summary>
     public class ScriptListItem
     {
-        private string _sourceFileName;
-
         public ScriptListItem(string fileName, string description = "")
         {
             Id = Guid.NewGuid();
@@ -16,22 +17,22 @@ namespace QT.ScriptsSet.Core
         }
 
         /// <summary>
-        /// Возвращает или задает id файла.
+        /// Возвращает id файла.
         /// </summary>
         public Guid Id { get; }
 
         /// <summary>
         /// Возвращает или задает пусть к файлу.
         /// </summary>
-        public string PathName => Path.GetDirectoryName(SourceFileName);
+        public string SourceFileName { get; set; }
 
         /// <summary>
-        /// Возвращает или задает исходное имя файла.
+        /// Возвращает исходное имя файла.
         /// </summary>
         public string SourceOnlyFileName => Path.GetFileName(SourceFileName);
 
         /// <summary>
-        /// Возвращает или задает виртуальное имя файла.
+        /// Возвращает виртуальное имя файла.
         /// </summary>
         public string TargetOnlyFileName
         {
@@ -62,6 +63,11 @@ namespace QT.ScriptsSet.Core
         public string Description { get; set; }
 
         /// <summary>
+        /// Возвращает путь к исходному файлу.
+        /// </summary>
+        public string SourcePathName => Path.GetDirectoryName(SourceFileName);
+
+        /// <summary>
         /// Возвращает или задает признак добавления нумерации перед именем файла.
         /// </summary>
         public bool AddNumber { get; set; } = true;
@@ -69,7 +75,5 @@ namespace QT.ScriptsSet.Core
         public string Version { get; set; }
 
         public string Index { get; set; }
-
-        public string SourceFileName { get; set; }
     }
 }

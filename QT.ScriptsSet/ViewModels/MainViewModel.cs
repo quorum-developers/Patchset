@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,7 +11,6 @@ using QT.Common;
 using QT.ScriptsSet.Core;
 using QT.ScriptsSet.Core.Commands;
 using QT.ScriptsSet.Core.Enums;
-using QT.ScriptsSet.Views;
 
 namespace QT.ScriptsSet.ViewModels
 {
@@ -121,7 +119,7 @@ namespace QT.ScriptsSet.ViewModels
             {
                 Directory.CreateDirectory(pathName);
 
-                File.Copy(Path.Combine(script.PathName, script.SourceOnlyFileName),
+                File.Copy(script.SourceFileName,
                     Path.Combine(pathName, script.TargetOnlyFileName));
             }
 
