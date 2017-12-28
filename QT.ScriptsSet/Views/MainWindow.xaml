@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:QT.ScriptsSet"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Набор скриптов 08.12.2017"
+    Title="Набор скриптов 28.12.2017"
     Width="790"
     Height="590"
     WindowStartupLocation="CenterScreen"
@@ -16,21 +16,20 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Grid.Column="0">
-            <MenuItem Header="Скрипты">
+            <MenuItem Header="Файл">
                 <MenuItem Command="{Binding NewProjectCommand}" Header="Новый проект" />
                 <MenuItem Command="{Binding OpenProjectCommand}" Header="Открыть проект..." />
-                <MenuItem Command="{Binding OpenOutputFileCommand}" Header="Открыть выходной файл" />
+                <MenuItem Command="{Binding OpenOutputFileCommand}" Header="Открыть исполняемый файл" />
                 <Separator />
                 <MenuItem Command="{Binding SaveProjectCommand}" Header="Сохранить проект" />
                 <MenuItem Command="{Binding SaveAsProjectCommand}" Header="Сохранить проект как..." />
                 <Separator />
+                <MenuItem Command="{Binding ExitCommand}" Header="Выход" />
+            </MenuItem>
+            <MenuItem Header="Скрипты">
                 <MenuItem Command="{Binding CreateSetForInstallationCommand}" Header="Создать набор скриптов для разворачивая БД" />
                 <MenuItem Command="{Binding CreateSetForUpdatesCommand}" Header="Создать набор скриптов для обновления БД" />
                 <Separator />
-                <MenuItem Command="{Binding ExitCommand}" Header="Выход" />
-            </MenuItem>
-            <MenuItem Header="Правка">
-                <MenuItem Command="{Binding DescriptionAsTargetFileNameCommand}" Header="Описание как имя файла" />
             </MenuItem>
             <MenuItem Header="Справка">
                 <MenuItem Header="О программе..." />
@@ -44,18 +43,10 @@
                         <Button
                             Width="32"
                             Height="32"
-                            Command="{Binding AddScriptCommand}"
-                            Style="{StaticResource ToolButtonStyle}"
-                            ToolTip="Добавить скрипты">
-                            <Image Source="Images/Add.png" Style="{StaticResource ButtonImageStyle}" />
-                        </Button>
-                        <Button
-                            Width="32"
-                            Height="32"
                             Command="{Binding MoveUpScriptCommand}"
                             Style="{StaticResource ToolButtonStyle}"
                             ToolTip="Переместить вверх">
-                            <Image Source="Images/MoveUp.png" Style="{StaticResource ButtonImageStyle}" />
+                            <Image Source="../Images/MoveUp.png" Style="{StaticResource ButtonImageStyle}" />
                         </Button>
                         <Button
                             Width="32"
@@ -63,15 +54,7 @@
                             Command="{Binding MoveDownScriptCommand}"
                             Style="{StaticResource ToolButtonStyle}"
                             ToolTip="Переместить вниз">
-                            <Image Source="Images/MoveDown.png" Style="{StaticResource ButtonImageStyle}" />
-                        </Button>
-                        <Button
-                            Width="32"
-                            Height="32"
-                            Command="{Binding DeleteScriptCommand}"
-                            Style="{StaticResource ToolButtonStyle}"
-                            ToolTip="Удалить">
-                            <Image Source="Images/Delete.png" Style="{StaticResource ButtonImageStyle}" />
+                            <Image Source="../Images/MoveDown.png" Style="{StaticResource ButtonImageStyle}" />
                         </Button>
                     </StackPanel>
                     <DataGrid
@@ -85,15 +68,19 @@
                         SelectionMode="Single">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Добавить скрипт">
+                                <MenuItem Header="Добавить">
                                     <MenuItem Command="{Binding AddScriptCommand}" Header="в конец списка" />
                                     <MenuItem Command="{Binding AddBeforeScriptCommand}" Header="перед выделенным скриптом" />
                                     <MenuItem Command="{Binding AddAfterScriptCommand}" Header="после выделенного скрипта" />
                                 </MenuItem>
-                                <MenuItem Command="{Binding ReplaceScriptCommand}" Header="Заменить скрипт" />
+                                <MenuItem Command="{Binding ReplaceScriptCommand}" Header="Заменить" />
                                 <MenuItem Command="{Binding DeleteScriptCommand}" Header="Удалить" />
                                 <Separator />
-                                <MenuItem Command="{Binding OpenFolderInExplorerCommand}" Header="Открыть папку в проводнике" />
+                                <MenuItem Command="{Binding DescriptionAsTargetFileNameCommand}" Header="Описание как имя файла" />
+                                <Separator />
+                                <MenuItem Command="{Binding OpenScriptInEditorCommand}" Header="Открыть скрипт" />
+                                <Separator />
+                                <MenuItem Command="{Binding OpenFolderInExplorerCommand}" Header="Открыть папку" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>

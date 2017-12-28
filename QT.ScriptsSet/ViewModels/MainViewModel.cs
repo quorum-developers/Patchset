@@ -36,7 +36,7 @@ namespace QT.ScriptsSet.ViewModels
 
         public string ApplicationVersion
         {
-            get { return _applicationVersion; }
+            get => _applicationVersion;
             set
             {
                 _applicationVersion = value;
@@ -134,10 +134,7 @@ namespace QT.ScriptsSet.ViewModels
             }
         }
 
-        public string Error
-        {
-            get { throw new System.NotImplementedException(); }
-        }
+        public string Error => throw new System.NotImplementedException();
 
         public string this[string columnName]
         {

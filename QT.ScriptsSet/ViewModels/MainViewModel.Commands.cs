@@ -24,6 +24,7 @@ namespace QT.ScriptsSet.ViewModels
         private ICommand _moveUpScriptCommand;
         private ICommand _descriptionAsTargetFileNameCommand;
         private ICommand _openFolderInExplorerCommand;
+        private ICommand _openFolderInEditorCommand;
 
         public ICommand NewProjectCommand
         {
@@ -129,7 +130,7 @@ namespace QT.ScriptsSet.ViewModels
                 {
                     SaveFileDialog saveFileDialog = new SaveFileDialog
                     {
-                        Filter = "Проекты (*.ssip)|*.ssip|Все файлы (*.*)|*.*",
+                        Filter = @"Проекты (*.ssip)|*.ssip|Все файлы (*.*)|*.*",
                         DefaultExt = "ssip"
                     };
 
@@ -137,7 +138,7 @@ namespace QT.ScriptsSet.ViewModels
                     {
                         SaveProjectFile(saveFileDialog.FileName, false);
                     }
-                }, () => true);
+                }, () => Scripts.Count > 0);
             }
         }
 
@@ -172,7 +173,7 @@ namespace QT.ScriptsSet.ViewModels
                         File.WriteAllText(Path.Combine(folderBrowserDialog.SelectedPath, "run.sql"),
                             stringBuilder.ToString());
                     }
-                }, () => true);
+                }, () => Scripts.Count > 0);
             }
         }
 
@@ -193,7 +194,7 @@ namespace QT.ScriptsSet.ViewModels
 
                         SaveProjectFile(saveFileDialog.FileName, true);
                     }
-                }, () => true);
+                }, () => Scripts.Count > 0);
             }
         }
 
@@ -351,11 +352,15 @@ namespace QT.ScriptsSet.ViewModels
                 {
                     if (SelectedScript != null)
                     {
-                        Scripts.Remove(this.SelectedScript);
+                        if (MessageBox.Show($@"Удалить скрипт ""{SelectedScript.SourceOnlyFileName}""?", QTResources.ApplicationName, MessageBoxButtons.OKCancel,
+                                MessageBoxIcon.Question) == DialogResult.OK)
+                        {
+                            Scripts.Remove(this.SelectedScript);
 
-                        UpdateScriptsParameters();
+                            UpdateScriptsParameters();
 
-                        RefreshDataGrid();
+                            RefreshDataGrid();
+                        }
                     }
                 }, () => SelectedScript != null);
             }
@@ -367,13 +372,13 @@ namespace QT.ScriptsSet.ViewModels
             {
                 return _descriptionAsTargetFileNameCommand ?? new DelegateCommand(() =>
                 {
-                    foreach (var script in Scripts)
+                    if (SelectedScript != null)
                     {
-                        script.Description = script.TargetOnlyFileName;
-                    }
+                        SelectedScript.Description = SelectedScript.TargetOnlyFileName;
 
-                    RefreshDataGrid();
-                }, () => true);
+                        RefreshDataGrid();
+                    }
+                }, () => SelectedScript != null);
             }
         }
 
@@ -386,6 +391,20 @@ namespace QT.ScriptsSet.ViewModels
                     if (SelectedScript != null)
                     {
                         Process.Start("explorer.exe", Path.GetDirectoryName(SelectedScript.SourceFileName));
+                    }
+                }, () => SelectedScript != null);
+            }
+        }
+
+        public ICommand OpenScriptInEditorCommand
+        {
+            get
+            {
+                return _openFolderInEditorCommand ?? new DelegateCommand(() =>
+                {
+                    if (SelectedScript != null)
+                    {
+                        Process.Start(SelectedScript.SourceFileName);
                     }
                 }, () => SelectedScript != null);
             }
