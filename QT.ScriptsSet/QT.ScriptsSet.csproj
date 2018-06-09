@@ -115,6 +115,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Compile Include="ViewModels\MainViewModel.Installation.cs" />
+    <Compile Include="ViewModels\MainViewModel.Commands.Project.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

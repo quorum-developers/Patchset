@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:QT.ScriptsSet"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Набор скриптов 28.12.2017"
+    Title="{Binding Title}"
     Width="790"
     Height="590"
     WindowStartupLocation="CenterScreen"
@@ -30,6 +30,9 @@
                 <MenuItem Command="{Binding CreateSetForInstallationCommand}" Header="Создать набор скриптов для разворачивая БД" />
                 <MenuItem Command="{Binding CreateSetForUpdatesCommand}" Header="Создать набор скриптов для обновления БД" />
                 <Separator />
+            </MenuItem>
+            <MenuItem Header="Проект">
+                <MenuItem Command="{Binding ClearCommand}" Header="Очистить" />
             </MenuItem>
             <MenuItem Header="Справка">
                 <MenuItem Header="О программе..." />
