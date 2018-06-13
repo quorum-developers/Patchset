@@ -41,82 +41,65 @@
 
         <TabControl Grid.Row="1" Grid.Column="0">
             <TabItem Header="Скрипты">
-                <DockPanel LastChildFill="True">
-                    <StackPanel DockPanel.Dock="Right">
-                        <Button
-                            Width="32"
-                            Height="32"
-                            Command="{Binding MoveUpScriptCommand}"
-                            Style="{StaticResource ToolButtonStyle}"
-                            ToolTip="Переместить вверх">
-                            <Image Source="../Images/MoveUp.png" Style="{StaticResource ButtonImageStyle}" />
-                        </Button>
-                        <Button
-                            Width="32"
-                            Height="32"
-                            Command="{Binding MoveDownScriptCommand}"
-                            Style="{StaticResource ToolButtonStyle}"
-                            ToolTip="Переместить вниз">
-                            <Image Source="../Images/MoveDown.png" Style="{StaticResource ButtonImageStyle}" />
-                        </Button>
-                    </StackPanel>
-                    <DataGrid
-                        Name="ScriptDataGrid"
-                        AutoGenerateColumns="False"
-                        CanUserAddRows="False"
-                        CanUserDeleteRows="False"
-                        FontSize="18"
-                        ItemsSource="{Binding Scripts}"
-                        SelectedItem="{Binding SelectedScript}"
-                        SelectionMode="Single">
-                        <DataGrid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Добавить">
-                                    <MenuItem Command="{Binding AddScriptCommand}" Header="в конец списка" />
-                                    <MenuItem Command="{Binding AddBeforeScriptCommand}" Header="перед выделенным скриптом" />
-                                    <MenuItem Command="{Binding AddAfterScriptCommand}" Header="после выделенного скрипта" />
-                                </MenuItem>
-                                <MenuItem Command="{Binding ReplaceScriptCommand}" Header="Заменить" />
-                                <MenuItem Command="{Binding DeleteScriptCommand}" Header="Удалить" />
-                                <Separator />
-                                <MenuItem Command="{Binding DescriptionAsTargetFileNameCommand}" Header="Описание как имя файла" />
-                                <Separator />
-                                <MenuItem Command="{Binding OpenScriptInEditorCommand}" Header="Открыть скрипт" />
-                                <Separator />
-                                <MenuItem Command="{Binding OpenFolderInExplorerCommand}" Header="Открыть папку" />
-                            </ContextMenu>
-                        </DataGrid.ContextMenu>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn
-                                Binding="{Binding TargetOnlyFileName}"
-                                Header="Новое имя файла"
-                                IsReadOnly="True" />
-                            <DataGridTextColumn
-                                Binding="{Binding SourceOnlyFileName}"
-                                Header="Исходное имя файла"
-                                IsReadOnly="True" />
-                            <DataGridTextColumn Binding="{Binding Description, Mode=TwoWay}" Header="Описание" />
-                            <!--<DataGridCheckBoxColumn Binding="{Binding AddNumber}" Header="Добавлять номер">
+                <DataGrid
+                    Name="ScriptDataGrid"
+                    AutoGenerateColumns="False"
+                    CanUserAddRows="False"
+                    CanUserDeleteRows="False"
+                    FontSize="18"
+                    ItemsSource="{Binding Scripts}"
+                    SelectedItem="{Binding SelectedScript}"
+                    SelectionMode="Single">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Добавить">
+                                <MenuItem Command="{Binding AddScriptCommand}" Header="в конец списка" />
+                                <MenuItem Command="{Binding AddBeforeScriptCommand}" Header="перед выделенным скриптом" />
+                                <MenuItem Command="{Binding AddAfterScriptCommand}" Header="после выделенного скрипта" />
+                            </MenuItem>
+                            <MenuItem Command="{Binding ReplaceScriptCommand}" Header="Заменить" />
+                            <MenuItem Command="{Binding DeleteScriptCommand}" Header="Удалить" />
+                            <Separator />
+                            <MenuItem Command="{Binding MoveUpScriptCommand}" Header="Переместить вверх" />
+                            <MenuItem Command="{Binding MoveDownScriptCommand}" Header="Переместить вниз" />
+                            <Separator />
+                            <MenuItem Command="{Binding DescriptionAsTargetFileNameCommand}" Header="Описание как имя файла" />
+                            <Separator />
+                            <MenuItem Command="{Binding OpenScriptInEditorCommand}" Header="Открыть скрипт" />
+                            <Separator />
+                            <MenuItem Command="{Binding OpenFolderInExplorerCommand}" Header="Открыть папку" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Binding="{Binding TargetOnlyFileName}"
+                            Header="Новое имя файла"
+                            IsReadOnly="True" />
+                        <DataGridTextColumn
+                            Binding="{Binding SourceOnlyFileName}"
+                            Header="Исходное имя файла"
+                            IsReadOnly="True" />
+                        <DataGridTextColumn Binding="{Binding Description, Mode=TwoWay}" Header="Описание" />
+                        <!--<DataGridCheckBoxColumn Binding="{Binding AddNumber}" Header="Добавлять номер">
                         <DataGridCheckBoxColumn.HeaderStyle>
                             <Style TargetType="DataGridColumnHeader">
                                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                             </Style>
                         </DataGridCheckBoxColumn.HeaderStyle>
                     </DataGridCheckBoxColumn>-->
-                            <DataGridTextColumn
-                                Binding="{Binding SourcePathName}"
-                                Header="Путь к файлу"
-                                IsReadOnly="True" />
-                            <DataGridTemplateColumn>
-                                <DataGridTemplateColumn.CellEditingTemplate>
-                                    <DataTemplate>
-                                        <TextBox />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellEditingTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </DockPanel>
+                        <DataGridTextColumn
+                            Binding="{Binding SourcePathName}"
+                            Header="Путь к файлу"
+                            IsReadOnly="True" />
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <TextBox />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
             <TabItem Header="Нумерация">
                 <StackPanel>

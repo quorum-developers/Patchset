@@ -22,7 +22,7 @@
         {
             get
             {
-                string title = "Набор скриптов 24.01.2018";
+                string title = "Набор скриптов 13.06.2018";
 
                 if (!string.IsNullOrWhiteSpace(ProjectFileName))
                 {
